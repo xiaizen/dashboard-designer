@@ -1,21 +1,24 @@
 import { LayoutDashboard, Video, Brain, FileEdit, Camera } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   icon: React.ElementType;
   label: string;
-  active?: boolean;
+  path: string;
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutDashboard, label: "DASHBOARD", active: true },
-  { icon: Video, label: "VIDEO PLAYER" },
-  { icon: Brain, label: "NEURAL SEARCH" },
-  { icon: FileEdit, label: "RULE EDITOR" },
-  { icon: Camera, label: "CAMERAS" },
+  { icon: LayoutDashboard, label: "DASHBOARD", path: "/" },
+  { icon: Video, label: "VIDEO PLAYER", path: "/video-player" },
+  { icon: Brain, label: "NEURAL SEARCH", path: "/neural-search" },
+  { icon: FileEdit, label: "RULE EDITOR", path: "/rule-editor" },
+  { icon: Camera, label: "CAMERAS", path: "/cameras" },
 ];
 
 export function Sidebar() {
+  const location = useLocation();
+
   return (
     <aside className="w-56 min-h-screen bg-sidebar border-r border-sidebar-border flex flex-col">
       {/* Logo */}
@@ -30,21 +33,25 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 py-4">
-        {navItems.map((item) => (
-          <button
-            key={item.label}
-            className={cn(
-              "w-full px-6 py-3 flex items-center gap-3 text-sm font-medium tracking-wide transition-all duration-200",
-              "hover:bg-sidebar-accent",
-              item.active
-                ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                : "text-sidebar-foreground"
-            )}
-          >
-            <item.icon className="h-4 w-4" />
-            <span className="font-mono text-xs">{item.label}</span>
-          </button>
-        ))}
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.label}
+              to={item.path}
+              className={cn(
+                "w-full px-6 py-3 flex items-center gap-3 text-sm font-medium tracking-wide transition-all duration-200",
+                "hover:bg-sidebar-accent",
+                isActive
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                  : "text-sidebar-foreground"
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              <span className="font-mono text-xs">{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* System Status */}
